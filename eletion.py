@@ -1,14 +1,7 @@
 
 
 
-# Send a GET request to the website
 
-"""
-slama_projekt.py: třetí projekt do Engeto Online Python Akademie
-author: David Sláma
-email: cimka1@seznam.cz
-discord: cimka1#2497
-"""
 import requests
 import sys
 import csv
