@@ -7,7 +7,9 @@ discord: jsemnamol#8198
 import requests
 import sys
 import csv
+import pandas as pd
 from bs4 import BeautifulSoup
+
 
 
 # url webu a název cesta_souboruu, který zadáváme při spuštění
@@ -20,6 +22,10 @@ soup = BeautifulSoup(rsp.content, 'html.parser')
 # Konkrétně hledá elementy "td" s třídou "cislo".
 td = soup.findAll("td", class_="cislo")
 print("STAHUJI DATA Z VYBRANÉHO URL: ",get_url)
+
+# Inicializace prázdného seznamu pro data
+data_to_write = []
+
 for td_el in td:
     get_url_obce = td_el.find('a')['href']
     obec_kod = get_url_obce.split('&')[2].split('=')[1]
@@ -61,12 +67,36 @@ for td_el in td:
     strana_hlasy = []
     for strana in strany:
         strana_hlasy.append(soup.find("td", string=strana).find_next_sibling("td").text.replace(u'\xa0', u' ').strip())
-    # data do CSV 
+        
+    # Přidání aktuálního řádku dat do seznamu data_to_write
+    data_to_write.append([nazev_obec, obec_kod, volici, obalky, hlasy] + strany)
+
+
+
+     #data do CSV 
     with open(cesta_souboru, mode='a', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile, delimiter=';')
         if csvfile.tell() == 0:  
             writer.writerow(["OBEC NAZEV", "KÓD OBCE", "VOLICI", "OBALKY", "HLASY"] + strany)
         writer.writerow([nazev_obec, obec_kod, volici, obalky, hlasy] + strana_hlasy)
-print("UKLÁDÁM DO SOUBORU S CESTOU: ",cesta_souboru)        
-print("ukoncuji ELECTION-SCRAPER")
+#print("UKLÁDÁM DO SOUBORU S CESTOU: ",cesta_souboru)        
+#print("ukoncuji ELECTION-SCRAPER")
+# Seznam názvů sloupců obsahující všechny sloupce z data_to_write a navíc další sloupce
+
+#columns = ["OBEC NAZEV", "KÓD OBCE", "VOLICI", "OBALKY", "HLASY"] + strany
+#df = pd.DataFrame(data=data_to_write, columns=columns)
+
+# Zápis do CSV souboru s nastavením kódování na UTF-8
+#df.to_csv(cesta_souboru, sep=';', encoding='utf-8', index=False)
+#print("Data byla uložena do souboru:", cesta_souboru)
+
+
+
+
+
+
+
+    
+    
+
   
